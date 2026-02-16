@@ -17,9 +17,14 @@ clean-targets:
   - "dbt_packages"
 
 vars:
+  # The missing 'project' variable the error complained about
+  project: "{{ env_var('GCP_PROJECT_ID') }}"
+  dataset: "{{ env_var('GCP_DATASET') }}"
+  
   ga4:
-    source_project: "portfolio-tom"
-   # source_dataset: "{{ env_var('GA4_SOURCE_DATASET', '<YOUR_GA4_DATASET_PREFIX_OR_DATASET>') }}"
-    property_ids: [111111111] # Array of properties to process
-    start_date: "20201101" # Earliest date to load
-    static_incremental_days: 3 # Number of days to scan and reprocess on each run
+    # Linking these to your GitHub Action environment variables
+    source_project: "{{ env_var('GA4_SOURCE_PROJECT') }}"
+    source_dataset: "analytics_{{ env_var('GA4_PROPERTY_ID') }}" 
+    property_ids: ["{{ env_var('GA4_PROPERTY_ID') }}"]
+    start_date: "{{ env_var('GA4_START_DATE') }}"
+    static_incremental_days: 3
