@@ -1,0 +1,1 @@
+select * from `portfolio-tom.ga4_ecom_sample.raw_ecom`
