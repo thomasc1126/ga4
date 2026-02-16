@@ -9,12 +9,12 @@ jobs:
     env:
       DBT_PROFILES_DIR: ./.github/dbt
       DBT_TARGET: ci
-      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      GCP_DATASET: ${{ secrets.GCP_DATASET }}
-      GA4_SOURCE_PROJECT: ${{ secrets.GA4_SOURCE_PROJECT }}
-      GA4_SOURCE_DATASET: ${{ secrets.GA4_SOURCE_DATASET }}
-      GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
-      GA4_START_DATE: ${{ secrets.GA4_START_DATE }}
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_DATASET: ${{ vars.GCP_DATASET }}
+      GA4_SOURCE_PROJECT: ${{ vars.GA4_SOURCE_PROJECT }}
+      GA4_SOURCE_DATASET: ${{ vars.GA4_SOURCE_DATASET }}
+      GA4_PROPERTY_ID: ${{ vars.GA4_PROPERTY_ID }}
+      GA4_START_DATE: ${{ vars.GA4_START_DATE }}
 
     steps:
       - name: Checkout
