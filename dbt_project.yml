@@ -17,13 +17,13 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  # Use the exact variable name 'project' because your model expects it
   project: "{{ env_var('GCP_PROJECT_ID') }}"
   dataset: "{{ env_var('GCP_DATASET') }}"
   
   ga4:
     source_project: "{{ env_var('GA4_SOURCE_PROJECT') }}"
-   ## source_dataset: "{{ env_var('GA4_SOURCE_DATASET') }}"
+    # Uncomment and use the GCP_DATASET env var which holds 'analytics_111111111'
+    source_dataset: "{{ env_var('GCP_DATASET') }}"
     property_ids: ["{{ env_var('GA4_PROPERTY_ID') }}"]
     start_date: "{{ env_var('GA4_START_DATE') }}"
-   ## static_incremental_days: 3
+    static_incremental_days: 3
