@@ -17,14 +17,13 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  # The missing 'project' variable the error complained about
+  # Use the exact variable name 'project' because your model expects it
   project: "{{ env_var('GCP_PROJECT_ID') }}"
   dataset: "{{ env_var('GCP_DATASET') }}"
   
   ga4:
-    # Linking these to your GitHub Action environment variables
     source_project: "{{ env_var('GA4_SOURCE_PROJECT') }}"
-    source_dataset: "analytics_{{ env_var('GA4_PROPERTY_ID') }}" 
+   ## source_dataset: "{{ env_var('GA4_SOURCE_DATASET') }}"
     property_ids: ["{{ env_var('GA4_PROPERTY_ID') }}"]
     start_date: "{{ env_var('GA4_START_DATE') }}"
-    static_incremental_days: 3
+   ## static_incremental_days: 3
