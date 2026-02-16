@@ -1,0 +1,60 @@
+name: dbt CI
+
+on:
+  pull_request:
+
+jobs:
+  dbt-build:
+    runs-on: ubuntu-latest
+    env:
+      DBT_PROFILES_DIR: ./.github/dbt
+      DBT_TARGET: ci
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_DATASET: ${{ secrets.GCP_DATASET }}
+      GA4_SOURCE_PROJECT: ${{ secrets.GA4_SOURCE_PROJECT }}
+      GA4_SOURCE_DATASET: ${{ secrets.GA4_SOURCE_DATASET }}
+      GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+      GA4_START_DATE: ${{ secrets.GA4_START_DATE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt-bigquery
+        run: pip install dbt-bigquery
+
+      - name: Create GCP credentials file
+        env:
+          GCP_SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+        run: |
+          mkdir -p ./.github/dbt
+          echo "$GCP_SERVICE_ACCOUNT_JSON" > ./.github/dbt/keyfile.json
+
+      - name: Create CI dbt profile
+        run: |
+          mkdir -p ./.github/dbt
+          cat > ./.github/dbt/profiles.yml <<EOF
+          default:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: service-account
+                keyfile: ./.github/dbt/keyfile.json
+                project: "${GCP_PROJECT_ID}"
+                dataset: "${GCP_DATASET}"
+                threads: 4
+                timeout_seconds: 300
+                location: US
+          EOF
+
+      - name: dbt deps
+        run: dbt deps
+
+      - name: dbt build
+        run: dbt build --target "$DBT_TARGET"
