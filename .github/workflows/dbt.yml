@@ -57,4 +57,6 @@ jobs:
         run: dbt deps
 
       - name: dbt build
-        run: dbt build --target "$DBT_TARGET"
+        run: |
+          dbt build --target "$DBT_TARGET" \
+            --vars "{'project': '$GCP_PROJECT_ID', 'dataset': '$GCP_DATASET', 'ga4_source_project': '$GA4_SOURCE_PROJECT', 'ga4_source_dataset': '$GA4_SOURCE_DATASET'}"
