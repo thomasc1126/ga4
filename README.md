@@ -1,6 +1,6 @@
-# GA4 dbt setup (Phase 1)
+# GA4 dbt setup (Phase 1 + Phase 2)
 
-This repo is configured to install and run the [`Velir/ga4`](https://hub.getdbt.com/) package.
+This repo is configured to install and run the [`Velir/ga4`](https://hub.getdbt.com/) package, plus local executive marts layered on top of Velir modeled outputs.
 
 ## 1) Fill required GA4 vars in `dbt_project.yml`
 
@@ -50,6 +50,48 @@ dbt build
 Expected output includes:
 - package + local models parsed
 - successful completion summary (or credential/config errors if placeholders are not filled)
+
+## Executive marts (Phase 2)
+
+All marts are in `models/marts/exec/` and are built only from Velir package modeled tables (sessions, purchases, items, and staged events).
+
+### `mart_exec_daily_kpis` (date grain)
+
+Top-line KPI mart for leadership scorecards.
+
+- Grain: `date`
+- Metrics: `revenue`, `orders`, `purchasers`, `aov`, `sessions`, `engaged_sessions`, `conversion_rate`, `items_sold`
+
+### `mart_channel_daily` (date + channel grain)
+
+Channel mix and attribution performance.
+
+- Grain: `date` + `default_channel_grouping` (with source/medium retained for drill-down)
+- Metrics: `sessions`, `revenue`, `orders`, `purchasers`, `aov`, `conversion_rate`
+
+### `mart_product_daily` (date + product grain)
+
+Merchandising and SKU/category performance.
+
+- Grain: `date` + `item_id` (with `item_name`, `item_category` attributes)
+- Metrics: `item_revenue`, `quantity`, `orders_with_item`
+
+### `mart_funnel_daily` (date grain)
+
+Session-based ecommerce funnel progression.
+
+- Grain: `date`
+- Steps: `view_item`, `add_to_cart`, `begin_checkout`, `purchase`
+- Outputs: per-step distinct session counts + CVRs (`view→cart`, `cart→checkout`, `checkout→purchase`, `view→purchase`)
+
+## Suggested dashboard mapping
+
+Use these marts directly in Looker Studio/Tableau to minimize ad hoc recomputation:
+
+- Executive KPI scorecard + daily trend: `mart_exec_daily_kpis`
+- Channel performance table/stacked trend: `mart_channel_daily`
+- Product leaderboard and category trends: `mart_product_daily`
+- Funnel visualization and daily conversion trend: `mart_funnel_daily`
 
 ## Quick run sequence
 
