@@ -18,8 +18,8 @@ clean-targets:
 
 vars:
   ga4:
-    source_project: "{{ env_var('GA4_SOURCE_PROJECT', '<YOUR_GCP_PROJECT_ID>') }}"
-    source_dataset: "{{ env_var('GA4_SOURCE_DATASET', '<YOUR_GA4_DATASET_PREFIX_OR_DATASET>') }}"
-    start_date: "{{ env_var('GA4_START_DATE', '2024-01-01') }}"
-    property_ids:
-      - "{{ env_var('GA4_PROPERTY_ID', '<YOUR_GA4_PROPERTY_ID>') }}"
+    source_project: "portfolio-tom"
+   # source_dataset: "{{ env_var('GA4_SOURCE_DATASET', '<YOUR_GA4_DATASET_PREFIX_OR_DATASET>') }}"
+    property_ids: [111111111] # Array of properties to process
+    start_date: "20201101" # Earliest date to load
+    static_incremental_days: 3 # Number of days to scan and reprocess on each run
